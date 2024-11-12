@@ -46,11 +46,7 @@ void loop() {
   // Wait a few seconds between measurements.
   if(!client.connected()) reconnect();
  
-
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht.readHumidity();
-  // Read temperature as Celsius (the default)
   float t = dht.readTemperature();
 
   // Check if any reads failed and exit early (to try again).
@@ -58,9 +54,6 @@ void loop() {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
-  // t = t + random(30);
-  // h = h + random(30);
-  
   // Compute heat index in Celsius (isFahreheit = false)
   float hic = dht.computeHeatIndex(t, h, false);
 
@@ -72,7 +65,7 @@ void loop() {
   Serial.print(hic);
   Serial.print(F("°C "));
  
-  String payload = "{"; //TB (line 103 - 121)
+  String payload = "{";
   payload += "\"Humidity\":"; 
   payload += h;
   payload += ",\"Temperature\":";
@@ -117,4 +110,6 @@ void reconnect()
     }
   }
 }
+
+
 
