@@ -9,8 +9,8 @@
 DHT dht(DHTPIN, DHTTYPE);
 
 //Wifi credential
-const char *ssid="Galaxy A710316";
-const char *password = "jwsg3561";
+const char *ssid="Lycia";
+const char *password = "lmgswsspltgcf";
 
 #define TOKEN "S4D5wU6MqToZCtwVzQv9"
 const char *mqtt_server = "demo.thingsboard.io";
@@ -52,43 +52,42 @@ void loop() {
   float h = dht.readHumidity();
   // Read temperature as Celsius (the default)
   float t = dht.readTemperature();
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dht.readTemperature(true);
 
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) || isnan(f)) {
+  if (isnan(h) || isnan(t)) {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
-  f = f + random(30);
-  t = t + random(30);
-  h = h + random(30);
-  // Compute heat index in Fahrenheit (the default)
-  float hif = dht.computeHeatIndex(f, h);
+  // t = t + random(30);
+  // h = h + random(30);
+  
   // Compute heat index in Celsius (isFahreheit = false)
   float hic = dht.computeHeatIndex(t, h, false);
 
   Serial.print(F("Humidity: "));
   Serial.print(h);
-  Serial.print(F("%  Temperature: "));
+  Serial.print(F("% | Temperature: "));
   Serial.print(t);
-  Serial.print(F("°C "));
-  Serial.print(f);
-  Serial.print(F("°F  Heat index: "));
+  Serial.print(F("°C | Heat index: "));
   Serial.print(hic);
   Serial.print(F("°C "));
-  Serial.print(hif);
-  Serial.println(F("°F"));
  
+  String payload = "{"; //TB (line 103 - 121)
+  payload += "\"Humidity\":"; 
+  payload += h;
+  payload += ",\"Temperature\":";
+  payload += t;
+  payload += ",\"HeatIndex\":";
+  payload += hic;
+  payload += "}";
+  Serial.println(payload);
+
   char attributes[1000];
- 
+  payload.toCharArray(attributes,1000);
   client.publish("v1/devices/me/telemetry",attributes);
   client.publish("v1/devices/me/attributes",attributes);
-
+  Serial.println(attributes);
   delay(5000);
-
- 
- 
 }
 
 void reconnect()
