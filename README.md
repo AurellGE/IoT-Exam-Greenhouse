@@ -13,3 +13,4 @@ Library yang dipakai:
 * DHT
 * Wifi
 * PubSubClient
+* Adafruit Unified Sensor
